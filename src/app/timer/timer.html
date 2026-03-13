@@ -1,0 +1,112 @@
+<div class="card">
+  <h2>Pomodoro</h2>
+
+  <div class="mode-buttons">
+    <button class="btn primary" [class.active]="mode === 'pomodoro'" (click)="setMode('pomodoro')">
+      Pomodoros
+    </button>
+
+    <button class="btn accent" [class.active]="mode === 'shortBreak'" (click)="setMode('shortBreak')">
+      Short Break
+    </button>
+
+    <button class="btn warn" [class.active]="mode === 'longBreak'" (click)="setMode('longBreak')">
+      Long Break
+    </button>
+  </div>
+
+  <div class="timer-display">
+    {{ formatTime(remainingSeconds) }}
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress" [style.width.%]="progress"></div>
+  </div>
+
+  <div class="controls">
+     <button
+    class="btn primary control-btn"
+    (click)="start()"
+    [class.active-btn]="isRunning">
+    Start
+  </button>
+
+  <button
+    class="btn control-btn"
+    (click)="pause()"
+    [class.active-btn]="!isRunning">
+    Pause
+  </button>
+
+
+  </div>
+
+  <div class="round-text">
+    Round: {{ pomodoroCount }}
+  </div>
+  <div class="selected-task-name">
+  {{ getSelectedTaskName() }}
+</div>
+
+  <div class="tasks-box">
+    <div class="tasks-header">
+      <h3>Tasks</h3>
+      <button class="btn secondary" (click)="openAddTaskForm()">Add Project</button>
+    </div>
+
+   <div class="task-row"
+  *ngFor="let task of tasks"
+  (click)="selectTask(task)"
+  [class.selected-task]="selectedTaskId === task.id">
+      <div class="task-info">
+        {{ task.title }} {{ task.currentPomodoros }}/{{ task.expectedPomodoros }}
+      </div>
+
+      <button class="btn edit-btn" (click)="openEditTaskForm(task)">
+        Edit
+      </button>
+    </div>
+    
+  
+
+</div>
+
+<div class="task-modal" *ngIf="showTaskForm">
+  <div class="task-form-card">
+    <h3>{{ isEditMode ? 'Edit Task' : 'Add Task' }}</h3>
+
+    <label>Title:</label>
+    <input type="text" [(ngModel)]="formTask.title" />
+
+    <label>Description:</label>
+    <input type="text" [(ngModel)]="formTask.description" />
+
+    <label>Expected Pomodoros:</label>
+    <input type="number" [(ngModel)]="formTask.expectedPomodoros" />
+
+    <div *ngIf="isEditMode">
+      <label>Current Pomodoros:</label>
+      <input type="number" [(ngModel)]="formTask.currentPomodoros" />
+    </div>
+
+    <label>Status:</label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="status" value="ToDo" [(ngModel)]="formTask.status" />
+        ToDo
+      </label>
+
+      <label>
+        <input type="radio" name="status" value="Done" [(ngModel)]="formTask.status" />
+        Done
+      </label>
+    </div>
+
+    <div class="form-buttons">
+      <button class="btn danger" *ngIf="isEditMode" (click)="deleteTask()">Delete</button>
+      <button class="btn" (click)="closeTaskForm()">Cancel</button>
+      <button class="btn primary" (click)="saveTask()">Save</button>
+    </div>
+  </div>
+</div>
+
